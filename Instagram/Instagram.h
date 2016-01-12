@@ -6,7 +6,7 @@
 //  Copyright © 2016 Scott Gauthreaux. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for Instagram.
 FOUNDATION_EXPORT double InstagramVersionNumber;

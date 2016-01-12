@@ -10,6 +10,8 @@
 		D258A02D1C45B8840011C1CC /* Instagram.h in Headers */ = {isa = PBXBuildFile; fileRef = D258A02C1C45B8840011C1CC /* Instagram.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D258A0341C45B8840011C1CC /* Instagram.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D258A0291C45B8840011C1CC /* Instagram.framework */; };
 		D258A0391C45B8840011C1CC /* InstagramTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D258A0381C45B8840011C1CC /* InstagramTests.swift */; };
+		D258A0441C45B89C0011C1CC /* InstagramAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D258A0431C45B89C0011C1CC /* InstagramAPI.swift */; };
+		D258A0461C45B8D50011C1CC /* InstagramModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D258A0451C45B8D50011C1CC /* InstagramModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +31,8 @@
 		D258A0331C45B8840011C1CC /* InstagramTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = InstagramTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D258A0381C45B8840011C1CC /* InstagramTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramTests.swift; sourceTree = "<group>"; };
 		D258A03A1C45B8840011C1CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D258A0431C45B89C0011C1CC /* InstagramAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstagramAPI.swift; sourceTree = "<group>"; };
+		D258A0451C45B8D50011C1CC /* InstagramModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstagramModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +75,8 @@
 		D258A02B1C45B8840011C1CC /* Instagram */ = {
 			isa = PBXGroup;
 			children = (
+				D258A0431C45B89C0011C1CC /* InstagramAPI.swift */,
+				D258A0451C45B8D50011C1CC /* InstagramModels.swift */,
 				D258A02C1C45B8840011C1CC /* Instagram.h */,
 				D258A02E1C45B8840011C1CC /* Info.plist */,
 			);
@@ -194,6 +200,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D258A0461C45B8D50011C1CC /* InstagramModels.swift in Sources */,
+				D258A0441C45B89C0011C1CC /* InstagramAPI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
