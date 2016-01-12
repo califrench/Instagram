@@ -12,18 +12,21 @@ import UIKit
 
 public class InstagramAPI {
     let baseAPIURL = "https://api.instagram.com/v1"
-    let clientId = "bcbe2c3e2971438b99083178e8614801"
-    let clientSecret = "2e12bfb2305047cfb0668c5551096815"
+    var clientId : String?
+    var clientSecret : String?
     
     // TODO: need to remove this before prod, the app will need to be able to generate one and store it persistently between uses
-    var accessToken = Optional("404827908.bcbe2c3.0d2abe8f4b054e23b32ac60aa46cec89")
+    public var accessToken : String?
     
     // TODO: add support for parameters
     // TODO: finish all API methods
     // TODO: add getUserId(username: String) -> Int? method
     
     // MARK: Convenience methods
-    public init() {}
+    public init(clientId: String, clientSecret: String) {
+        self.clientId = clientId
+        self.clientSecret = clientSecret
+    }
     
     
     public func performAPIRequest(var urlString: String, withParameters parameters: [String:StringLiteralType]? = nil, usingMethod method: String = "GET", closure: (AnyObject?) -> Void) {
