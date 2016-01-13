@@ -7,20 +7,18 @@
 //
 
 import Foundation
-import UIKit
 
 
 public class InstagramAPI {
     let baseAPIURL = "https://api.instagram.com/v1"
     var clientId : String?
     var clientSecret : String?
-    
-    // TODO: need to remove this before prod, the app will need to be able to generate one and store it persistently between uses
     public var accessToken : String?
     
     // TODO: add support for parameters
     // TODO: finish all API methods
     // TODO: add getUserId(username: String) -> Int? method
+    // TODO: add versions of the methods that take InstagramModels instead of an id 
     
     // MARK: Convenience methods
     public init(clientId: String, clientSecret: String) {
@@ -29,10 +27,10 @@ public class InstagramAPI {
     }
     
     
-    public func performAPIRequest(var urlString: String, withParameters parameters: [String:StringLiteralType]? = nil, usingMethod method: String = "GET", closure: (AnyObject?) -> Void) {
+    public func performAPIRequest(var urlString: String, withParameters parameters: [String:AnyObject]? = nil, usingMethod method: String = "GET", completion: (AnyObject?) -> Void) {
         guard let accessTokenString = accessToken else {
             print("Attempted to call \"performAPIRequest\" before authentication")
-            closure(nil)
+            completion(nil)
             return
         }
         
@@ -46,7 +44,7 @@ public class InstagramAPI {
         
         guard let url = NSURL(string: baseAPIURL + urlString) else {
             print("Invalid url string supplied\"\(urlString)\" when calling performAPIRequest")
-            closure(nil)
+            completion(nil)
             return
         }
         
@@ -70,7 +68,7 @@ public class InstagramAPI {
                 let responseObject = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as? [String:AnyObject]
                 
                 if responseObject!["meta"]!["code"] as! Int == 200 {
-                    closure(responseObject!["data"]!)
+                    completion(responseObject!["data"]!)
                 }
 
             } catch {
@@ -83,114 +81,167 @@ public class InstagramAPI {
     }
     
     // MARK: User Endpoint
+    public func getUser(completion: (InstagramUser?) -> Void) {
+        getUser(nil, completion: completion)
+    }
     
-    public func getUser(userId: Int?, closure: (InstagramUser?) -> Void) {
+    public func getUser(userId: Int, completion: (InstagramUser?) -> Void) {
+        getUser(userId, completion: completion)
+    }
+    
+    func getUser(userId: Int?, completion: (InstagramUser?) -> Void) {
         let userIdParameter = userId != nil ? "\(userId!)" : "self"
         performAPIRequest("/users/"+userIdParameter) { responseData in
-            guard let responseData = responseData else {
-                closure(nil)
+            guard let responseData = responseData, instagramUser = InstagramUser(data: responseData) else {
+                completion(nil)
                 return
             }
-            var instagramUser = InstagramUser(id: Int(responseData["id"] as! String)!)
-            instagramUser.bio = responseData["bio"] as! String
-            instagramUser.fullName = responseData["full_name"] as! String
-            instagramUser.profilePicture = responseData["profile_picture"] as! String
-            instagramUser.username = responseData["username"] as! String
-            instagramUser.website = responseData["website"] as? String
             
-            closure(instagramUser)
+            completion(instagramUser)
         }
     }
     
-    public func getUserRecentMedia(userId: Int?, closure: ([InstagramMedia]?) -> Void) {
+    public func getUserRecentMedia(completion: ([InstagramMedia]?) -> Void) {
+        getUserRecentMedia(nil, completion: completion)
+    }
+    
+    public func getUserRecentMedia(userId: Int, completion: ([InstagramMedia]?) -> Void) {
+        getUserRecentMedia(userId, completion: completion)
+    }
+
+    
+    func getUserRecentMedia(userId: Int?, completion: ([InstagramMedia]?) -> Void) {
         let userIdParameter = userId != nil ? "\(userId!)" : "self"
         performAPIRequest("/users/\(userIdParameter)/media/recent") { responseData in
-            guard let medias = responseData else {
-                closure(nil)
+            guard let medias = responseData as? [AnyObject] else {
+                completion(nil)
                 return
             }
             
             var newMedias = [InstagramMedia]()
             
-            for media in medias as! [[String:AnyObject]] {
-                var newMedia = InstagramMedia(id: media["id"] as! String, type:InstagramMediaType(rawValue: media["type"] as! String)!)
-                newMedia.link = media["link"] as! String
-                if let images = media["images"], let standardResolution = images["standard_resolution"], let url = standardResolution!["url"] {
-                    newMedia.standardResolutionURL = url as! String
+            for mediaData in medias {
+                if let newMedia = InstagramMedia(data: mediaData) {
+                    newMedias.append(newMedia)
                 }
-                
-                newMedias.append(newMedia)
             }
             
-            closure(newMedias)
+            completion(newMedias)
         }
     }
     
-    public func getUserLikedMedia(closure: ([InstagramMedia]?) -> Void) {
+    public func getUserLikedMedia(completion: ([InstagramMedia]?) -> Void) {
         performAPIRequest("/users/self/media/liked") { responseData in
+            guard let medias = responseData as? [AnyObject] else {
+                completion(nil)
+                return
+            }
             
+            var newMedias = [InstagramMedia]()
+            
+            for mediaData in medias {
+                if let newMedia = InstagramMedia(data: mediaData) {
+                    newMedias.append(newMedia)
+                }
+            }
+            
+            completion(newMedias)
+
         }
     }
     
-    public func searchUser(query: String, closure: ([InstagramUser]?) -> Void) {
+    public func searchUsers(query: String, completion: ([InstagramUser]?) -> Void) {
         
     }
     
     // MARK: Relationships Endpoint
-    public func getUserFollows(closure: ([InstagramUser]?) -> Void) {
+    public func getUserFollows(completion: ([InstagramUser]?) -> Void) {
         
     }
     
-    public func getUserFollowers(closure: ([InstagramUser]?) -> Void) {
+    public func getUserFollowedBy(completion: ([InstagramUser]?) -> Void) {
         
     }
     
-    public func getUserFollowerRequests(closure: ([InstagramUser]?) -> Void) {
+    public func getUserRequestedBy(completion: ([InstagramUser]?) -> Void) {
         
     }
     
-    public func getUserRelationship(to userId:Int, closure:(InstagramRelationship?) -> Void) {
+    public func getUserRelationship(to userId:Int, completion:(InstagramRelationship?) -> Void) {
         
     }
     
-    public func setUserRelationship(to userId:Int, relation: String, closure:(Bool) -> Void) {
+    public func setUserRelationship(to userId:Int, relation: String, completion:(Bool) -> Void) {
         
     }
     
     // MARK: Media Endpoint
-    public func getMedia(id id: Int, closure: (InstagramMedia?) -> Void) {
+    public func getMedia(id id: Int, completion: (InstagramMedia?) -> Void) {
         
     }
     
-    public func getMedia(shortcode shortcode: String, closure: (InstagramMedia?) -> Void) {
+    public func getMedia(shortcode shortcode: String, completion: (InstagramMedia?) -> Void) {
         
     }
     
-    public func searchMedia(lat: Double, lng: Double, closure: ([InstagramMedia]?) -> Void) {
+    public func searchMedia(lat: Double, lng: Double, completion: ([InstagramMedia]?) -> Void) {
         
     }
     
-    public func getImage(image: InstagramMedia, closure: (UIImage?) -> Void) {
-        print("Getting image \(image)")
-        dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)) {
-            print(NSURL(string: image.standardResolutionURL))
-            if let url = NSURL(string: image.standardResolutionURL), let data = NSData(contentsOfURL: url), let image = UIImage(data: data) {
-                dispatch_async(dispatch_get_main_queue()) {
-                    print("Got image")
-                    closure(image)
-                }
-            } else {
-                dispatch_async(dispatch_get_main_queue()) {
-                    print("Failed to get image")
-                    closure(nil)
-                }
-            }
-        }
+    // MARK: Comments Endpoint
+    public func getMediaComments(mediaId id: Int, completion: ([InstagramComment]?) -> Void) {
+        
+    }
+    
+    public func setMediaComment(mediaId id: Int, comment: String, completion: (InstagramComment?) -> Void) {
+        
+    }
+    
+    public func removeMediaComment(mediaId: Int, commentId: Int, completion: (Bool) -> Void) {
+        
+    }
+    
+    // MARK: Likes Endpoint
+    public func getMediaLikes(mediaId id: Int, completion: ([InstagramLike]?) -> Void) {
+        
+    }
+    
+    public func setMediaLike(mediaId id: Int, completion: (InstagramLike?) -> Void) {
+        
+    }
+    
+    public func removeMediaLike(mediaId: Int, completion: (Bool) -> Void) {
+        
+    }
+    
+    // MARK: Tags Endpoint
+    public func getTag(name: String, completion: (InstagramTag?) -> Void) {
+        
+    }
+    
+    public func getTagRecentMedia(tagName: String, completion: ([InstagramMedia]?) -> Void) {
+        
+    }
+    
+    public func searchTags(query: String, completion: ([InstagramMedia]?) -> Void) {
+        
+    }
+    
+    // MARK: locations Endpoint
+    public func getLocation(locationId: Int, completion: (InstagramLocation?) -> Void) {
+        
+    }
+    
+    public func getLocationRecentMedia(locationId: Int, completion: ([InstagramMedia]?) -> Void) {
+        
+    }
+    
+    public func searchLocations(query: String, completion: ([InstagramMedia]?) -> Void) {
+        
+    }
 
-    }
     
 
-    
 }
 
 
