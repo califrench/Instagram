@@ -72,6 +72,9 @@ public class InstagramAPI {
             if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {           // check for http errors
                 print("statusCode should be 200, but is \(httpStatus.statusCode)")
                 print("response = \(response)")
+                if data != nil {
+                    print("data = \(String(data: data!, encoding: NSUTF8StringEncoding)!)")
+                }
             }
             
             do {
@@ -111,14 +114,14 @@ public class InstagramAPI {
     // MARK: - User Endpoint
    
     public func getUser(completion: (InstagramUser?) -> Void) {
-        getUser(nil, completion: completion)
+        _getUser(nil, completion: completion)
     }
     
     public func getUser(userId: Int, completion: (InstagramUser?) -> Void) {
-        getUser(userId, completion: completion)
+        _getUser(userId, completion: completion)
     }
     
-    func getUser(userId: Int?, completion: (InstagramUser?) -> Void) {
+    func _getUser(userId: Int?, completion: (InstagramUser?) -> Void) {
         let userIdParameter = userId != nil ? "\(userId!)" : "self"
         performAPIRequest("/users/"+userIdParameter) { responseData in
             guard let responseData = responseData, instagramUser = InstagramUser(data: responseData) else {
@@ -131,15 +134,15 @@ public class InstagramAPI {
     }
     
     public func getUserRecentMedia(count: Int? = nil, minId: Int? = nil, maxId: Int? = nil, completion: ([InstagramMedia]?) -> Void) {
-        getUserRecentMedia(nil, count: count, minId: minId, maxId: maxId, completion: completion)
+        _getUserRecentMedia(nil, count: count, minId: minId, maxId: maxId, completion: completion)
     }
     
     public func getUserRecentMedia(userId: Int, count: Int? = nil, minId: Int? = nil, maxId: Int? = nil, completion: ([InstagramMedia]?) -> Void) {
-        getUserRecentMedia(userId, count: count, minId: minId, maxId: maxId, completion: completion)
+        _getUserRecentMedia(userId, count: count, minId: minId, maxId: maxId, completion: completion)
     }
 
     
-    func getUserRecentMedia(userId: Int?, count: Int? = nil, minId: Int? = nil, maxId: Int? = nil, completion: ([InstagramMedia]?) -> Void) {
+    func _getUserRecentMedia(userId: Int?, count: Int? = nil, minId: Int? = nil, maxId: Int? = nil, completion: ([InstagramMedia]?) -> Void) {
         let userIdParameter = userId != nil ? "\(userId!)" : "self"
         var parameters = [String:AnyObject]()
         if count != nil {

@@ -11,7 +11,7 @@
 
 import Foundation
 
-protocol InstagramModel {
+public protocol InstagramModel {
     var id : String { get }
     init(id: String)
     init?(data: AnyObject)
@@ -23,17 +23,18 @@ public enum InstagramMediaType : String {
 }
 
 public struct InstagramUser: InstagramModel {
-    var id : String
+    public var id : String
     var bio = ""
     var fullName = ""
     var profilePicture = ""
     var username = ""
     var website : String?
     
-    init(id: String) {
+    public init(id: String) {
         self.id = id
     }
-    
+
+    public
     init?(data: AnyObject) {
         guard let id  =   data["id"] as? String,
             bio             =   data["bio"] as? String,
@@ -53,15 +54,15 @@ public struct InstagramUser: InstagramModel {
 }
 
 public struct InstagramRelationship: InstagramModel {
-    var id : String
+    public var id : String
     var outgoingStatus = ""
     var incomingStatus = ""
     
-    init(id: String) {
+    public init(id: String) {
         self.id = id
     }
     
-    init?(data: AnyObject) {
+    public init?(data: AnyObject) {
         guard let id  =   data["id"] as? String,
             outgoingStatus = data["outgoing_status"] as? String,
             incomingStatus = data["incoming_status"] as? String
@@ -74,7 +75,7 @@ public struct InstagramRelationship: InstagramModel {
 }
 
 public struct InstagramMedia: InstagramModel {
-    var id : String
+    public var id : String
     var comments : [InstagramComment] = []
     var caption : InstagramCaption?
     var link = ""
@@ -84,7 +85,7 @@ public struct InstagramMedia: InstagramModel {
     var type : InstagramMediaType
     var user : InstagramUser?
     
-    init(id: String) {
+    public init(id: String) {
         self.id = id
         self.type = .Image
     }
@@ -94,7 +95,7 @@ public struct InstagramMedia: InstagramModel {
         self.type = type
     }
     
-    init?(data: AnyObject) {
+    public init?(data: AnyObject) {
         guard let id = data["id"] as? String,
         typeString = data["type"] as? String,
         type = InstagramMediaType(rawValue: typeString),
@@ -133,15 +134,15 @@ public struct InstagramMedia: InstagramModel {
 }
 
 public struct InstagramCaption: InstagramModel {
-    var id: String
+    public var id: String
     var from : InstagramUser?
     var text = ""
     
-    init(id: String) {
+    public init(id: String) {
         self.id = id
     }
-    
-    init?(data: AnyObject) {
+  
+    public init?(data: AnyObject) {
         guard let id  =   data["id"] as? String
             else { return nil}
         
@@ -150,16 +151,16 @@ public struct InstagramCaption: InstagramModel {
 }
 
 public struct InstagramComment: InstagramModel {
-    var id: String
+    public var id: String
     var from : InstagramUser?
     var createdTime = ""
     var text = ""
     
-    init(id: String) {
+    public init(id: String) {
         self.id = id
     }
     
-    init?(data: AnyObject) {
+    public init?(data: AnyObject) {
         guard let id  =   data["id"] as? String
             else { return nil}
         
@@ -168,13 +169,13 @@ public struct InstagramComment: InstagramModel {
 }
 
 public struct InstagramLike: InstagramModel {
-    var id: String
+    public var id: String
     
-    init(id: String) {
+    public init(id: String) {
         self.id = id
     }
     
-    init?(data: AnyObject) {
+    public init?(data: AnyObject) {
         guard let id  =   data["id"] as? String
             else { return nil}
         
@@ -183,13 +184,13 @@ public struct InstagramLike: InstagramModel {
 }
 
 public struct InstagramTag: InstagramModel {
-    var id: String
+    public var id: String
     
-    init(id: String) {
+    public init(id: String) {
         self.id = id
     }
     
-    init?(data: AnyObject) {
+    public init?(data: AnyObject) {
         guard let id  =   data["id"] as? String
             else { return nil}
         
@@ -198,13 +199,13 @@ public struct InstagramTag: InstagramModel {
 }
 
 public struct InstagramLocation: InstagramModel {
-    var id: String
+    public var id: String
     
-    init(id: String) {
+    public init(id: String) {
         self.id = id
     }
     
-    init?(data: AnyObject) {
+    public init?(data: AnyObject) {
         guard let id  =   data["id"] as? String
             else { return nil}
         
