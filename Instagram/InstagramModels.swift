@@ -102,7 +102,7 @@ public struct InstagramMedia: InstagramModel {
             link = data["link"] as? String else {
                 return nil
         }
-        
+
         self.id = id
         self.type = type
         self.link = link
@@ -185,6 +185,7 @@ public struct InstagramLike: InstagramModel {
 
 public struct InstagramTag: InstagramModel {
     public var id: String
+    public var name: String = ""
     
     public init(id: String) {
         self.id = id

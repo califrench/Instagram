@@ -25,19 +25,21 @@ public class InstagramAPI {
     public var accessToken : String?
     
     // TODO: finish all API methods
-    // TODO: add getUserId(username: String) -> Int? method
+    // TODO: add getuserId(username: String) -> Int? method
     // TODO: add versions of the methods that take InstagramModels instead of an id 
     // TODO: document methods
     
     // MARK: - Convenience methods
     
+    /// Initializes the API instance
     public init(clientId: String, clientSecret: String) {
         self.clientId = clientId
         self.clientSecret = clientSecret
     }
     
-    
-    public func performAPIRequest(var urlString: String, withParameters parameters: [String:AnyObject]? = nil, usingMethod method: HTTPMethod = .Get, completion: (AnyObject?) -> Void) {
+    /// Performs a given API request and retrieves data from the Instagram REST API
+    /// This method shouldn't be accessed outside of the scope of this library as it is a low level method
+    func performAPIRequest(var urlString: String, withParameters parameters: [String:AnyObject]? = nil, usingMethod method: HTTPMethod = .Get, completion: (AnyObject?) -> Void) {
         guard let accessTokenString = accessToken else {
             print("Attempted to call \"performAPIRequest\" before authentication")
             completion(nil)
@@ -93,8 +95,8 @@ public class InstagramAPI {
         return
     }
     
+    /// This is a convenience method used to convert an arbitrary response into an array of *InstagramModel* objects
     func objectsArray<T: InstagramModel>(withType: T.Type, fromData data: AnyObject?) -> [T]? {
-        
         guard let datas = data as? [AnyObject] else {
             return nil
         }
@@ -113,15 +115,18 @@ public class InstagramAPI {
     
     // MARK: - User Endpoint
    
+    /// Get information about the current user
     public func getUser(completion: (InstagramUser?) -> Void) {
         _getUser(nil, completion: completion)
     }
     
-    public func getUser(userId: Int, completion: (InstagramUser?) -> Void) {
+    /// Get information about a user with the given id
+    public func getUser(userId: String, completion: (InstagramUser?) -> Void) {
         _getUser(userId, completion: completion)
     }
     
-    func _getUser(userId: Int?, completion: (InstagramUser?) -> Void) {
+    /// The method that actually gets information about users from the Instagram API
+    func _getUser(userId: String?, completion: (InstagramUser?) -> Void) {
         let userIdParameter = userId != nil ? "\(userId!)" : "self"
         performAPIRequest("/users/"+userIdParameter) { responseData in
             guard let responseData = responseData, instagramUser = InstagramUser(data: responseData) else {
@@ -133,16 +138,19 @@ public class InstagramAPI {
         }
     }
     
-    public func getUserRecentMedia(count: Int? = nil, minId: Int? = nil, maxId: Int? = nil, completion: ([InstagramMedia]?) -> Void) {
+    /// Gets the current user's recent media
+    public func getUserRecentMedia(count count: Int? = nil, minId: String? = nil, maxId: String? = nil, completion: ([InstagramMedia]?) -> Void) {
         _getUserRecentMedia(nil, count: count, minId: minId, maxId: maxId, completion: completion)
     }
     
-    public func getUserRecentMedia(userId: Int, count: Int? = nil, minId: Int? = nil, maxId: Int? = nil, completion: ([InstagramMedia]?) -> Void) {
+    
+    /// Gets the specified user's recent media
+    public func getUserRecentMedia(userId userId: String, count: Int? = nil, minId: String? = nil, maxId: String? = nil, completion: ([InstagramMedia]?) -> Void) {
         _getUserRecentMedia(userId, count: count, minId: minId, maxId: maxId, completion: completion)
     }
 
-    
-    func _getUserRecentMedia(userId: Int?, count: Int? = nil, minId: Int? = nil, maxId: Int? = nil, completion: ([InstagramMedia]?) -> Void) {
+    /// The method that actually gets a user's recent media
+    func _getUserRecentMedia(userId: String?, count: Int? = nil, minId: String? = nil, maxId: String? = nil, completion: ([InstagramMedia]?) -> Void) {
         let userIdParameter = userId != nil ? "\(userId!)" : "self"
         var parameters = [String:AnyObject]()
         if count != nil {
@@ -157,10 +165,11 @@ public class InstagramAPI {
             parameters["max_id"] = maxId!
         }
         
-        performAPIRequest("/users/\(userIdParameter)/media/recent", withParameters: parameters) {completion(self.objectsArray(InstagramMedia.self, fromData: $0))}
+        performAPIRequest("/users/\(userIdParameter)/media/recent", withParameters: parameters) {[weak self] in completion(self?.objectsArray(InstagramMedia.self, fromData: $0))}
     }
     
-    public func getUserLikedMedia(count: Int? = nil, maxLikeId: Int? = nil, completion: ([InstagramMedia]?) -> Void) {
+    /// Gets the current user's recently liked media
+    public func getUserLikedMedia(count count: Int? = nil, maxLikeId: String? = nil, completion: ([InstagramMedia]?) -> Void) {
         var parameters = [String:AnyObject]()
         
         if count != nil {
@@ -171,36 +180,42 @@ public class InstagramAPI {
             parameters["max_like_id"] = maxLikeId!
         }
         
-        performAPIRequest("/users/self/media/liked", withParameters: parameters) {completion(self.objectsArray(InstagramMedia.self, fromData: $0))}
+        performAPIRequest("/users/self/media/liked", withParameters: parameters) {[weak self] in completion(self?.objectsArray(InstagramMedia.self, fromData: $0))}
     }
     
-    public func searchUsers(query: String, count: Int? = nil, completion: ([InstagramUser]?) -> Void) {
+    /// Searches users with usernames containing the given keyword
+    public func searchUsers(query query: String, count: Int? = nil, completion: ([InstagramUser]?) -> Void) {
         var parameters = [String:AnyObject]()
         
         if count != nil {
             parameters["count"] = count!
         }
         
-        performAPIRequest("/users/search", withParameters: parameters) {completion(self.objectsArray(InstagramUser.self, fromData: $0))}
+        performAPIRequest("/users/search", withParameters: parameters) {[weak self] in completion(self?.objectsArray(InstagramUser.self, fromData: $0))}
         
     }
     
     
-    // MARK: Relationships Endpoint
+    // MARK: - Relationships Endpoint
     
-    public func getUserFollows(completion: ([InstagramUser]?) -> Void) {
-        performAPIRequest("/users/self/follows") {completion(self.objectsArray(InstagramUser.self, fromData: $0))}
+    /// Gets the users followed by the current user
+    public func getUserFollows(completion completion: ([InstagramUser]?) -> Void) {
+        performAPIRequest("/users/self/follows") {[weak self] in completion(self?.objectsArray(InstagramUser.self, fromData: $0))}
     }
     
-    public func getUserFollowedBy(completion: ([InstagramUser]?) -> Void) {
-        performAPIRequest("/users/self/followed-by") {completion(self.objectsArray(InstagramUser.self, fromData: $0))}
+    /// Gets the followers of the current user
+    public func getUserFollowedBy(completion completion: ([InstagramUser]?) -> Void) {
+        performAPIRequest("/users/self/followed-by") {[weak self] in completion(self?.objectsArray(InstagramUser.self, fromData: $0))}
     }
     
-    public func getUserRequestedBy(completion: ([InstagramUser]?) -> Void) {
-        performAPIRequest("/users/self/requested-by") {completion(self.objectsArray(InstagramUser.self, fromData: $0))}
+    /// Gets the follow requests for the current user
+    /// Note: This will be empty if the current user has a public profile because requests instantly become followers
+    public func getUserRequestedBy(completion completion: ([InstagramUser]?) -> Void) {
+        performAPIRequest("/users/self/requested-by") {[weak self] in completion(self?.objectsArray(InstagramUser.self, fromData: $0))}
     }
     
-    public func getUserRelationship(to userId:Int, completion:(InstagramRelationship?) -> Void) {
+    /// Gets information about the current user's relationship to the specified user
+    public func getUserRelationship(to userId:String, completion:(InstagramRelationship?) -> Void) {
         performAPIRequest("/users/\(userId)/relationship") { responseData in
             guard let responseData = responseData, relationship = InstagramRelationship(data: responseData) else {
                 completion(nil)
@@ -212,7 +227,8 @@ public class InstagramAPI {
     
     }
     
-    public func setUserRelationship(to userId:Int, relation: String, completion:(InstagramRelationship?) -> Void) {
+    /// Updates the current user's relationship to the specified user
+    public func setUserRelationship(to userId:String, relation: String, completion:(InstagramRelationship?) -> Void) {
         performAPIRequest("/users/\(userId)/relationship", withParameters: ["action":relation], usingMethod: .Post) { responseData in
             guard let responseData = responseData, relationship = InstagramRelationship(data: responseData) else {
                 completion(nil)
@@ -223,79 +239,220 @@ public class InstagramAPI {
         }
     }
     
+    // MARK: Relationships Objects Endpoint
     
-    // MARK: Media Endpoint
-    
-    public func getMedia(id id: Int, completion: (InstagramMedia?) -> Void) {
-        
+    /// The same as getUserRelationship(to:completion:) but an instance of InstagrammUser can be passed as the first argument
+    public func getUserRelationship(to user:InstagramUser, completion:(InstagramRelationship?) -> Void) {
+        getUserRelationship(to: user.id, completion: completion)
     }
     
+    /// The same as setUserRelationship(to:relation:completion:) but instances of InstagramUser and InstagramRelationship can be passed instead of strings
+    public func setUserRelationship(to user:InstagramUser, relation: InstagramRelationship, completion:(InstagramRelationship?) -> Void) {
+        setUserRelationship(to: user.id, relation: relation.outgoingStatus, completion: completion)
+    }
+    
+    
+    // MARK: - Media Endpoint
+    
+    /// Gets the media with the specified ID
+    public func getMedia(id id: String, completion: (InstagramMedia?) -> Void) {
+        performAPIRequest("/media/"+id) { responseData in
+            guard let responseData = responseData, media = InstagramMedia(data: responseData) else {
+                completion(nil)
+                return
+            }
+            completion(media)
+        }
+    }
+    
+    /// Gets the media with the specified shortcode
     public func getMedia(shortcode shortcode: String, completion: (InstagramMedia?) -> Void) {
-        
+        performAPIRequest("/media/shortcode/\(shortcode)") { responseData in
+            guard let responseData = responseData, media = InstagramMedia(data: responseData) else {
+                completion(nil)
+                return
+            }
+            completion(media)
+        }
     }
     
-    public func searchMedia(lat: Double, lng: Double, completion: ([InstagramMedia]?) -> Void) {
+    /// Searches for media in a specific location 
+    /// The default distance is 1000 (1 km) and the max is 5 km
+    public func searchMedia(lat lat: Double, lng: Double, distance: Int? = nil, completion: ([InstagramMedia]?) -> Void) {
+        var parameters = [String:AnyObject]()
+        parameters["lat"] = lat
+        parameters["lng"] = lng
+        if distance != nil {
+            parameters["distance"] = distance!
+        }
         
-    }
-    
-    
-    // MARK: Comments Endpoint
-    
-    public func getMediaComments(mediaId id: Int, completion: ([InstagramComment]?) -> Void) {
-        
-    }
-    
-    public func setMediaComment(mediaId id: Int, comment: String, completion: (InstagramComment?) -> Void) {
-        
-    }
-    
-    public func removeMediaComment(mediaId: Int, commentId: Int, completion: (Bool) -> Void) {
-        
-    }
-    
-    
-    // MARK: Likes Endpoint
-    
-    public func getMediaLikes(mediaId id: Int, completion: ([InstagramLike]?) -> Void) {
-        
-    }
-    
-    public func setMediaLike(mediaId id: Int, completion: (InstagramLike?) -> Void) {
-        
-    }
-    
-    public func removeMediaLike(mediaId: Int, completion: (Bool) -> Void) {
-        
+        performAPIRequest("/media/search", withParameters: parameters, usingMethod: .Get) {[weak self] in completion(self?.objectsArray(InstagramMedia.self, fromData: $0))}
     }
     
     
-    // MARK: Tags Endpoint
+    // MARK: - Comments Endpoint
     
+    /// Gets the comments on a specified media
+    public func getMediaComments(mediaId id: String, completion: ([InstagramComment]?) -> Void) {
+        performAPIRequest("/media/\(id)/comments") {[weak self] in completion(self?.objectsArray(InstagramComment.self, fromData: $0))}
+    }
+    
+    /// Adds a comment to the specified media
+    public func addMediaComment(mediaId id: String, comment: String, completion: (Bool) -> Void) {
+        performAPIRequest("/media/\(id)/comments", withParameters: ["text":comment], usingMethod: .Post) { responseData in
+            completion(responseData != nil)
+        }
+    }
+    
+    /// Removes the user's specified comment from the media
+    public func removeMediaComment(mediaId id: String, commentId: String, completion: (Bool) -> Void) {
+        performAPIRequest("/media/\(id)/comments/\(commentId)", usingMethod: .Delete) { responseData in
+            completion(responseData != nil)
+        }
+    }
+    
+    // MARK: Comments Objects Endpoint
+    
+    /// The same as getMediaComments(mediaId:completion:) but can pass an instance of InstagramMedia instead of its id
+    public func getMediaComments(media: InstagramMedia, completion: ([InstagramComment]?) -> Void) {
+        getMediaComments(mediaId: media.id, completion: completion)
+    }
+    
+    /// The same as addMediaComment(mediaId:comment:completion:) but can pass instances of InstagramMedia and InstagramComment instead of strings
+    public func addMediaComment(media: InstagramMedia, comment: InstagramComment, completion: (Bool) -> Void) {
+        addMediaComment(mediaId: media.id, comment: comment.text, completion: completion)
+    }
+    
+    /// The same as removeMediaComment(mediaId:commentId:completion:) but can pass instances of InstagramMedia and InstagramComment instead of strings
+    public func removeMediaComment(media: InstagramMedia, comment: InstagramComment, completion: (Bool) -> Void) {
+        removeMediaComment(mediaId: media.id, commentId: comment.id, completion: completion)
+    }
+    
+    
+    // MARK: - Likes Endpoint
+    
+    /// Gets all the likes on the specified media
+    public func getMediaLikes(mediaId id: String, completion: ([InstagramLike]?) -> Void) {
+        performAPIRequest("/media/\(id)/likes") {[weak self] in completion(self?.objectsArray(InstagramLike.self, fromData: $0))}
+    }
+    
+    /// Sets a like for the current user on the specified media
+    public func setMediaLike(mediaId id: String, completion: (Bool) -> Void) {
+        performAPIRequest("/media/\(id)/comments", usingMethod: .Post) { responseData in
+            completion(responseData != nil)
+        }
+    }
+    
+    /// Removes the current user's like on the specified media
+    public func removeMediaLike(mediaId id: String, completion: (Bool) -> Void) {
+        performAPIRequest("/media/\(id)/comments", usingMethod: .Delete) { responseData in
+            completion(responseData != nil)
+        }
+    }
+    
+    
+    // MARK: - Tags Endpoint
+    
+    /// Gets information about a certain tag
     public func getTag(name: String, completion: (InstagramTag?) -> Void) {
-        
+        performAPIRequest("/tags/\(name)") { responseData in
+            guard let responseData = responseData, tag = InstagramTag(data: responseData) else {
+                completion(nil)
+                return
+            }
+            
+            completion(tag)
+        }
     }
     
-    public func getTagRecentMedia(tagName: String, completion: ([InstagramMedia]?) -> Void) {
+    
+    /// Gets recent media with the specified tag
+    public func getTagRecentMedia(name: String, count: Int? = nil, minTagId: String? = nil, maxTagId: String? = nil, completion: ([InstagramMedia]?) -> Void) {
+        var parameters = [String:AnyObject]()
+        if count != nil {
+            parameters["count"] = count!
+        }
         
+        if minTagId != nil {
+            parameters["min_tag_id"] = minTagId!
+        }
+        
+        if maxTagId != nil {
+            parameters["max_tag_id"] = maxTagId!
+        }
+
+        performAPIRequest("/tags/\(name)/media/recent", withParameters: parameters) {[weak self] in completion(self?.objectsArray(InstagramMedia.self, fromData: $0))}
     }
     
-    public func searchTags(query: String, completion: ([InstagramMedia]?) -> Void) {
-        
+    /// Searches for tags containing the specified string
+    public func searchTags(query: String, completion: ([InstagramTag]?) -> Void) {
+        performAPIRequest("/tags/search", withParameters: ["q":query]) {[weak self] in completion(self?.objectsArray(InstagramTag.self, fromData: $0))}
     }
     
+    // MARK: Tags Objects Endpoint
     
-    // MARK: Locations Endpoint
+    /// The same as getTagRecentMedia(name:count:minTagId:maxTagId:completion:) but can pass an instance of InstagramTag instead of the name of the tag
+    public func getTagRecentMedia(tag: InstagramTag, count: Int? = nil, minTagId: String? = nil, maxTagId: String? = nil, completion: ([InstagramMedia]?) -> Void) {
+        getTagRecentMedia(tag.name, count: count, minTagId: minTagId, maxTagId: maxTagId, completion: completion)
+    }
+
     
-    public func getLocation(locationId: Int, completion: (InstagramLocation?) -> Void) {
-        
+    // MARK: - Locations Endpoint
+    
+    /// Gets the location with the specified id
+    public func getLocation(locationId: String, completion: (InstagramLocation?) -> Void) {
+        performAPIRequest("/locations/\(locationId)") { responseData in
+            guard let responseData = responseData, location = InstagramLocation(data: responseData) else {
+                completion(nil)
+                return
+            }
+            
+            completion(location)
+        }
     }
     
-    public func getLocationRecentMedia(locationId: Int, completion: ([InstagramMedia]?) -> Void) {
+    /// Gets the recent media for the specified location
+    public func getLocationRecentMedia(locationId: String, minId: String? = nil, maxId: String? = nil, completion: ([InstagramMedia]?) -> Void) {
+        var parameters = [String:AnyObject]()
+        if minId != nil {
+            parameters["min_id"] = minId!
+        }
         
+        if maxId != nil {
+            parameters["max_id"] = maxId!
+        }
+        
+        performAPIRequest("/locations/\(locationId)/media/recent", withParameters: parameters) {[weak self] in completion(self?.objectsArray(InstagramMedia.self, fromData: $0))}
+
     }
     
-    public func searchLocations(query: String, completion: ([InstagramMedia]?) -> Void) {
+    /// Searches locations by coordinates
+    /// The default distance is 1000 (1km) and the max distance is 5km
+    public func searchLocationsByCoordinates(lat lat: Double, lng: Double, distance: Int? = nil, completion: ([InstagramLocation]?) -> Void) {
+        var parameters = [String:AnyObject]()
+        parameters["lat"] = lat
+        parameters["lng"] = lng
         
+        if distance != nil {
+            parameters["distance"] = distance
+        }
+        
+        performAPIRequest("/locations/search", withParameters: parameters) {[weak self] in completion(self?.objectsArray(InstagramLocation.self, fromData: $0))}
+    }
+    
+    /// Searches locations by Facebook Places ID
+    public func searchLocationsByFacebookPlacesId(id: String, completion: ([InstagramLocation]?) -> Void) {
+        performAPIRequest("/locations/search", withParameters: ["facebook_places_id":id]) {[weak self] in completion(self?.objectsArray(InstagramLocation.self, fromData: $0))}
+    }
+    
+    /// Searches locations by Foursquare ID
+    public func searchLocationsByFoursquareId(id: String, completion: ([InstagramLocation]?) -> Void) {
+        performAPIRequest("/locations/search", withParameters: ["foursquare_id":id]) {[weak self] in completion(self?.objectsArray(InstagramLocation.self, fromData: $0))}
+    }
+    
+    /// Searches locations by Foursquare V2 ID
+    public func searchLocationsByFoursquareV2Id(id: String, completion: ([InstagramLocation]?) -> Void) {
+        performAPIRequest("/locations/search", withParameters: ["foursquare_v2_id":id]) {[weak self] in completion(self?.objectsArray(InstagramLocation.self, fromData: $0))}
     }
 
 }
