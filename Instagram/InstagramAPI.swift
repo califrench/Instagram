@@ -24,10 +24,9 @@ public class InstagramAPI {
     var clientSecret : String?
     public var accessToken : String?
     
-    // TODO: finish all API methods
     // TODO: add getuserId(username: String) -> Int? method
-    // TODO: add versions of the methods that take InstagramModels instead of an id 
-    // TODO: document methods
+    // TODO: add login and auth functions
+    // TODO: do we need to move some of the relative API methods to objects? For example getUserRecentMedia, what about a user.getRecentMedia() function?
     
     // MARK: - Convenience methods
     
