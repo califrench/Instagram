@@ -20,3 +20,5 @@ api.getUserRecentMedia(userId) { recentMedia in
     print(recentMedia)
 }
 ```
+\n
+\n
