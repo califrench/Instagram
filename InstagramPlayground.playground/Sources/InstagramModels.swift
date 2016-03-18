@@ -41,18 +41,16 @@ public struct InstagramUser: InstagramModel {
 
     public
     init?(data: AnyObject) {
+        print(data)
         guard let id  =   data["id"] as? String,
+            bio             =   data["bio"] as? String,
             fullName        =   data["full_name"] as? String,
             profilePicture  =   data["profile_picture"] as? String,
             username        =   data["username"] as? String
             else { return nil }
         
         self.id = id
-        
-        if let bio             =   data["bio"] as? String {
-            self.bio = bio
-        }
-
+        self.bio = bio
         
         self.fullName = fullName
         self.profilePicture = profilePicture

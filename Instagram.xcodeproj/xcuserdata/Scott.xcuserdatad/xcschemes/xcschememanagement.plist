@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
+		<key>InstagramOSX.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -18,6 +23,31 @@
 			<true/>
 		</dict>
 		<key>D258A0321C45B8840011C1CC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D259E06E1C7299050050A122</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D259E0771C7299050050A122</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D259E0991C729E900050A122</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D259E0A91C729FFB0050A122</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D259E0B21C729FFB0050A122</key>
 		<dict>
 			<key>primary</key>
 			<true/>

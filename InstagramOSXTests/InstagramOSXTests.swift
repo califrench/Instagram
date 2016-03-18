@@ -1,15 +1,15 @@
 //
-//  InstagramTests.swift
-//  InstagramTests
+//  InstagramOSXTests.swift
+//  InstagramOSXTests
 //
-//  Created by Scott Gauthreaux on 12/01/16.
+//  Created by Scott Gauthreaux on 15/02/16.
 //  Copyright © 2016 Scott Gauthreaux. All rights reserved.
 //
 
 import XCTest
-@testable import Instagram
+@testable import InstagramOSX
 
-class InstagramTests: XCTestCase {
+class InstagramOSXTests: XCTestCase {
     
     override func setUp() {
         super.setUp()

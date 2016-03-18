@@ -1,0 +1,10 @@
+framework module InstagramOSX {
+  umbrella header "InstagramOSX.h"
+
+  export *
+  module * { export * }
+}
+
+module InstagramOSX.Swift {
+    header "InstagramOSX-Swift.h"
+}

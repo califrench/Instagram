@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D258A0281C45B8840011C1CC"
-               BuildableName = "Instagram.framework"
-               BlueprintName = "Instagram"
+               BlueprintIdentifier = "D259E0A91C729FFB0050A122"
+               BuildableName = "InstagramOSX.framework"
+               BlueprintName = "InstagramOSX"
                ReferencedContainer = "container:Instagram.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D258A0321C45B8840011C1CC"
-               BuildableName = "InstagramTests.xctest"
-               BlueprintName = "InstagramTests"
+               BlueprintIdentifier = "D259E0B21C729FFB0050A122"
+               BuildableName = "InstagramOSXTests.xctest"
+               BlueprintName = "InstagramOSXTests"
                ReferencedContainer = "container:Instagram.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -42,9 +42,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D258A0281C45B8840011C1CC"
-            BuildableName = "Instagram.framework"
-            BlueprintName = "Instagram"
+            BlueprintIdentifier = "D259E0A91C729FFB0050A122"
+            BuildableName = "InstagramOSX.framework"
+            BlueprintName = "InstagramOSX"
             ReferencedContainer = "container:Instagram.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -64,9 +64,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D258A0281C45B8840011C1CC"
-            BuildableName = "Instagram.framework"
-            BlueprintName = "Instagram"
+            BlueprintIdentifier = "D259E0A91C729FFB0050A122"
+            BuildableName = "InstagramOSX.framework"
+            BlueprintName = "InstagramOSX"
             ReferencedContainer = "container:Instagram.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -82,9 +82,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D258A0281C45B8840011C1CC"
-            BuildableName = "Instagram.framework"
-            BlueprintName = "Instagram"
+            BlueprintIdentifier = "D259E0A91C729FFB0050A122"
+            BuildableName = "InstagramOSX.framework"
+            BlueprintName = "InstagramOSX"
             ReferencedContainer = "container:Instagram.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

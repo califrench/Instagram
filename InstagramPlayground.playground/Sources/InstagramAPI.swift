@@ -60,8 +60,6 @@ public class InstagramAPI {
             return
         }
         
-
-        
         print(url)
         
         let request = NSMutableURLRequest(URL: url)
@@ -82,8 +80,10 @@ public class InstagramAPI {
             }
             
             do {
-                let responseObject = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as? [String:AnyObject]
                 
+                let responseObject = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as? [String:AnyObject]
+                print("data = \(String(data: data!, encoding: NSUTF8StringEncoding)!)")
+
                 if responseObject!["meta"]!["code"] as! Int == 200 {
                     completion(responseObject!["data"]!)
                 }
@@ -205,7 +205,9 @@ public class InstagramAPI {
     /// Searches for one user with a given username
     /// Will only return a user if the username matches exactly the provided username
     public func searchForUser(userName: String, completion: (InstagramUser?) -> ()) {
+        print("searching for\(userName)")
         searchForUsers(query: userName) { users in
+            print(users)
             guard let users = users else {
                 completion(nil)
                 return
