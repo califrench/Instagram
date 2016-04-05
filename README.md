@@ -21,6 +21,15 @@ api.getUserRecentMedia(userId) { recentMedia in
 }
 ```
 
+## Contributing
+
+Obviously this is still a work in progress. Please feel free to fork and PRs are more than welcome!
+I haven't had a lot of time recently to make any significant progress on this but I think this would be useful for a lot of people.
+
+## Direction
+
+Since the open source release of Swift, there has been a lot of momentum on libraries that could be very useful. I'm considering dropping my `NSURLSession` based code in favor of the goergeous [Alamofire library](https://github.com/Alamofire/Alamofire).
+
  
  
  
