@@ -1,5 +1,5 @@
 # Instagram
-An Instagram API written in swift that can be used freely in iOS, OS X and Linux client and server applications. 
+An Instagram API written in swift that can be used freely in iOS, macOS and Linux client and server applications. 
 
 
 ## The Goal
@@ -28,72 +28,9 @@ I haven't had a lot of time recently to make any significant progress on this bu
 
 ## Direction
 
-Since the open source release of Swift, there has been a lot of momentum on libraries that could be very useful. I'm considering dropping my `NSURLSession` based code in favor of the goergeous [Alamofire library](https://github.com/Alamofire/Alamofire).
-
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+Swift being open source offers some great opportunities for cross-platform software and libraries. I haven't had a lot of time to dedicate to this API and much remains to be done.
+The [Swift Server APIs Project](https://swift.org/server-apis/) is aiming to built a full suite of networking utilities that can run on both macOS and Linux and I hope [Alamofire](https://github.com/Alamofire/Alamofire) moves towards those APIs eventually to help with cross-platform support because it's one of the cleanest and simplest networking libraries I've seen out there.
+It integrates nicely in Swift with the new advent of closures and looks a lot like [GCD](https://en.wikipedia.org/wiki/Grand_Central_Dispatch)'s facelift in Swift 3.
  
  
  
